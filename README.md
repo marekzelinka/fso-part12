@@ -14,17 +14,18 @@ How to understand container vs image:
 - `docker container run --rm ubuntu ls` - runs the `ls` command and removes the container after execution
 - `docker run -it hello-node-world bash` - runs the image `hello-node-world` in interactive mode with bash
 
-- `docker container ls -a` - list containers, the `-a` will list containers that have been exited
+- `docker container ls -a` - list containers, the `-a` will list containers that have been stoped
   - `docker ps` - shortcut, same as above
 
-- `docker container diff hello-node-world` - check for the changes between the original image and container 
+- `docker container diff hello-node-world` - check for the changes between the original image and new container 
 
 - `docker container rm hopeful_clarke` - removes the container
 
-- `docker container run -it --name hello-node node:20 bash` - creates a container named `hello-node` with image `node:20`, that has node already installed 
-- `docker start hopeful_clarke` - starts a already exited container
+- `docker container run -it --name hello-node node:20 bash` - creates a container named `hello-node` with image `node:20`, with node preinstalled 
+- `docker start hopeful_clarke` - starts a stoped container
 - `docker start -i hopeful_clarke` - starts container in interactive mode
-- `docker kill hopeful_clarke` - stops a container
+- `docker kill hopeful_clarke` - stops a container by **name** 
+  - `docker kill 3c` - you can use the **id**
 
 - `docker commit hopeful_clarke hello-node-world` - creates a new image named `hello-node-world` based on `hopeful-clarke` container, with all the changes we have made
 
@@ -41,6 +42,8 @@ How to understand container vs image:
   - the dot (.) means that the dockerfile is in this directory
   - Meaning: Docker please build with tag (you may think of the tag as the name of the resulting image.) fs-hello-world the Dockerfile in this directory
 - `docker run -it fs-hello-world bash` - we can overwrite the default CMD command
+- `docker run -p 3123:3000 express-server` - the `-p` flag allows us to open a port from the host machine and direct it to a port in the container
+  - The format is `-p host-port:application-port`
 
 ### Basic Dockerfile:
 
