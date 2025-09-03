@@ -59,7 +59,7 @@ Snyk&apos;s **10 best practices for Node/Express containerization**, [read more 
 
 ### Basic Dockerfile:
 
-``` Dockerfile
+```Dockerfile
 # syntax=docker/dockerfile:1 # best practice, specify dockerfile version 
 
 FROM node:20 # Use the node:20 image as the base for our image
@@ -77,7 +77,7 @@ CMD node index.js # what happens when docker run is used, default command, can b
 
 Set environment variables using `ENV` command, examplle:
 
-``` Dockerfile
+```Dockerfile
 ENV DEBUG=playground:*
 ```
 
@@ -123,13 +123,13 @@ CMD [ "node", "./bin/www" ]
 
 It is best when we run our project not using npm or pnpm at all but with the underlining command, e.g.:
 
-``` Dockerfile
+```Dockerfile
 CMD [ "node", "./bin/www" ]
 ```
 
 and not:
 
-``` Dockerfile
+```Dockerfile
 CMD [ "npm", "start" ]
 ```
 
@@ -141,7 +141,7 @@ To use it, it's **very recommended btw**, we create a `docker-compose.yml` file 
 
 Example:
 
-``` yml
+```yml
 services:
   app:                    # The name of the service, can be anything
     image: express-server # Declares which image to use
@@ -162,7 +162,7 @@ Using docker compose, we can run a MongoDB database for development porpuses.
 
 We can create a docker compose file for development like `docker-compose.dev.yml`:
 
-``` yml
+```yml
 services:
   mongo:
     image: mongo
@@ -177,3 +177,25 @@ services:
 - `docker compose -f docker-compose.dev.yml up` - run this file with Docker Compose
   - `docker compose -f docker-compose.dev.yml up -d` - with `-d` we run the app in the backgroud
     - `docker compose -f docker-compose.dev.yml logs -f` - view output logs, the `-f` will ensure we follow the log stream
+
+### Bind mount
+
+Bind mount is the act of binding a file (or directory) on the host machine to a file (or directory) in the container. A bind mount is done by adding a `-v` flag with `container run`. The syntax is `-v FILE-IN-HOST:FILE-IN-CONTAINER`. The bind mount is declared under key volumes in `docker-compose.dev.yml`.
+
+Example:
+
+```yml
+  mongo:
+    image: mongo
+    ports:
+     - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+
+    volumes: 
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+```
+
+The result of the above bind mount is that the file `mongo-init.js` in ./mongo folder of the host machine is the same as the `mongo-init.js` file in the container's `/docker-entrypoint-initdb.d` directory.

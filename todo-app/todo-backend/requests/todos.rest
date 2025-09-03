@@ -1,0 +1,24 @@
+### GET todos listing
+GET http://localhost:3000/todos
+
+### POST todo to listing
+POST http://localhost:3000/todos
+Content-Type: application/json
+
+{
+  "text": "Hello from VSCode"
+}
+
+### DELETE todo
+DELETE http://localhost:3000/todos/68b8880dbeb061d167fe6911
+
+### GET todo
+GET http://localhost:3000/todos/68b89033b292ac38fd6506cd
+
+### PUT todo
+PUT http://localhost:3000/todos/68b89033b292ac38fd6506cd
+Content-Type: application/json
+
+{
+  "done": true
+}
