@@ -1,0 +1,9 @@
+Script started on 2025-09-03 07:41:09+02:00 [TERM="xterm-256color" TTY="/dev/pts/9" COLUMNS="105" LINES="21"]
+[1m[7m%[27m[1m[0m                                                                                                         ]2;marekzelinka@DESKTOP-JNUNCR1:~/Developer/fso-part12]1;..er/fso-part12]7;file://DESKTOP-JNUNCR1/home/marekzelinka/Developer/fso-part12\[0m[27m[24m[J[01;32m➜  [36mfso-part12[00m [K[?1h=[?2004h[0m[27m[24m[J[01;32m➜  [36mfso-part12[00m [01;34mgit:([31mmain[34m) [33m✗[00m [Kddocker run -it ubuntu bas[25D[32md[32mo[32mc[32mk[32me[32mr[39m[19Ch[26D[39m[7md[39m[7mo[39m[7mc[39m[7mk[39m[7me[39m[7mr[7m [7mr[7mu[7mn[7m [7m-[7mi[7mt[7m [7mu[7mb[7mu[7mn[7mt[7mu[7m [7mb[7ma[7ms[7mh[27m[26D[27md[27mo[27mc[27mk[27me[27mr[27m [27mr[27mu[27mn[27m [27m-[27mi[27mt[27m [27mu[27mb[27mu[27mn[27mt[27mu[27m [27mb[27ma[27ms[27mh[26D[32md[32mo[32mc[32mk[32me[32mr[39m[20C[?1l>[?2004l
+]2;docker run -it ubuntu bash]1;docker[?2004h]0;root@5dccc9e11256: /root@5dccc9e11256:/# mkdir /usr/src/app
+[?2004l[?2004h]0;root@5dccc9e11256: /root@5dccc9e11256:/# touch /usr/src/app/index.js
+[?2004l[?2004h]0;root@5dccc9e11256: /root@5dccc9e11256:/# [Kexit
+[?2004lexit
+[1m[7m%[27m[1m[0m                                                                                                         ]2;marekzelinka@DESKTOP-JNUNCR1:~/Developer/fso-part12]1;..er/fso-part12]7;file://DESKTOP-JNUNCR1/home/marekzelinka/Developer/fso-part12\[0m[27m[24m[J[01;32m➜  [36mfso-part12[00m [01;34mgit:([31mmain[34m) [33m✗[00m [K[?1h=[?2004h[1m[31me[0m[39m[1m[31me[0m[39m[90mxit[39m[0m[32me[32mx[39m[1m[31me[1m[31mx[1m[31mi[0m[39m[0m[32me[0m[32mx[0m[32mi[32mt[39m[?1l>[?2004l
+]2;exit]1;exit
+Script done on 2025-09-03 07:42:13+02:00 [COMMAND_EXIT_CODE="0"]
