@@ -155,3 +155,25 @@ services:
   - `docker compose up -d` - using `-d` for detached application
 
 - `docker compose down` - to close the application
+
+## Utilizing containers in dev
+
+Using docker compose, we can run a MongoDB database for development porpuses.
+
+We can create a docker compose file for development like `docker-compose.dev.yml`:
+
+``` yml
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+```
+
+- `docker compose -f docker-compose.dev.yml up` - run this file with Docker Compose
+  - `docker compose -f docker-compose.dev.yml up -d` - with `-d` we run the app in the backgroud
+    - `docker compose -f docker-compose.dev.yml logs -f` - view output logs, the `-f` will ensure we follow the log stream
