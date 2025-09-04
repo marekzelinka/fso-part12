@@ -29,8 +29,8 @@ How to understand container vs image:
   - `docker start -i hopeful_clarke` - starts container in interactive mode
 
 - `docker container stop hopeful_clarke` - stops (more graceful) a container
-- `docker container kill hopeful_clarke` - kills (terminates) a container by **name** 
-  - `docker container kill 3c` - you can use the **id**
+- `docker container kill hopeful_clarke` - sends a signal `SIGKILL` to the process forcing it to exit, and that causes the container to stop
+  - `docker container start 3c && docker container stop 3c` - you can also use the container id, instead of label
 
 - `docker commit hopeful_clarke hello-node-world` - creates a new image named `hello-node-world` based on `hopeful-clarke` container, with all the changes we have made
 
@@ -307,7 +307,78 @@ root@7edcb36aff08:/# cd /usr/share/nginx/html/
 root@7edcb36aff08:/# rm index.html
 ```
 
-## exec
+### `docker exec`
 
 - can be used to jump into a container when it's running
 - `docker exec -it wonderful_ramanujan bash` - jump into a running container, with interactive mode and `bash` running
+
+---
+
+## Mongo command-line interface
+
+First we need a running container with the mongo image:
+
+```sh
+# using the -f flag allows us to pick a different docker-compose file
+# by default it picks the docker-compose.yml file
+docker compose -f docker-compose.dev.yml up -d
+```
+
+The `docker-compose.dev.yml` file:
+
+```Dockerfile
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 3456:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - MONGO_INITDB_DATABASE=the_database
+    volumes:
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - mongo_data:/data/db
+volumes:
+  mongo_data:
+```
+
+We also need a `./mongo/mongo-init.js` file that is run by the image for auth puropses:
+
+```js
+db.createUser({
+  user: 'the_username',
+  pwd: 'the_password',
+  roles: [
+    {
+      role: 'dbOwner',
+      db: 'the_database',
+    },
+  ],
+});
+
+db.createCollection('todos');
+
+db.todos.insert({ text: 'Write code', done: true });
+db.todos.insert({ text: 'Learn about containers', done: false });
+```
+
+Now we can connect to it via:
+
+```sh
+ docker exec -it 4c bash # 4c is the id of our running container
+```
+
+Inside the container we can run `mongosh`:
+
+```sh
+mongosh -u root -p example
+```
+
+### Commands
+
+- `show dbs` - show currnet databases
+- `use the_database` - pick a working database
+- `show collections` - lists available collections
+- `db.todos.find()` - here the `todos` is a database that we can run mongo commands on
+- `db.todos.insertOne({text:"Increase the number of tools in my tool belt", done:false})` - insert a new document into the `todos` collection
