@@ -28,8 +28,9 @@ How to understand container vs image:
 - `docker start hopeful_clarke` - starts a stoped container
   - `docker start -i hopeful_clarke` - starts container in interactive mode
 
-- `docker kill hopeful_clarke` - stops a container by **name** 
-  - `docker kill 3c` - you can use the **id**
+- `docker container stop hopeful_clarke` - stops (more graceful) a container
+- `docker container kill hopeful_clarke` - kills (terminates) a container by **name** 
+  - `docker container kill 3c` - you can use the **id**
 
 - `docker commit hopeful_clarke hello-node-world` - creates a new image named `hello-node-world` based on `hopeful-clarke` container, with all the changes we have made
 
@@ -251,3 +252,62 @@ The above will let Docker create and manage the volume that is still stored in y
 - `docker volume ls` - list the volumes
 - `docker volume inspect` - inspect the volume
 - `docker volume rm` - delete volume
+
+## Debugging issues in container
+
+- We need new tools for debugging
+- Configuration most often is in either of two states: 
+  1. working
+  2. broken
+- When writting long `Dockerfile`s or `docker-compose.yml`, take a moment and think about the various ways you could confirm something is working
+
+### Consider the following sernario:
+
+Running `docker container run -d nginx` (among other things, capable of serving static HTML files)
+
+Now the q's are:
+  - Where should we go with our browser? (what's the url and port)
+  - Is it even running?
+
+We can list running containers using `docker container ls`.
+
+```
+$ docker container ls
+CONTAINER ID   IMAGE   COMMAND  CREATED     STATUS    PORTS     NAMES
+3f831a57b7cc   nginx   ...      3 sec ago   Up 2 sec  80/tcp    keen_darwin
+```
+
+*The default port for nginx is `80` and the random container name is `keen_darwin`.*
+
+Let's shut it down and restart, specifing a port:
+
+```sh
+docker stop keen_darwin
+docker rm keen_darwin
+docker run -d -p 8080:80 nginx
+```
+
+Now, running `docker ps` will result in:
+
+```
+CONTAINER ID   IMAGE     COMMAND  PORTS                  NAMES
+7edcb36aff08   nginx     ...      0.0.0.0:8080->80/tcp   wonderful_ramanujan
+```
+
+When we visit `localhost:8080` we can see it shows the wrong message! Lets fix that by using the `exec` command, you can keep your browser open and your container running:
+
+```sh
+docker exec -it wonderful_ramanujan bash
+```
+
+Now, inside the container, we can replace the default `index.html` file:
+
+```
+root@7edcb36aff08:/# cd /usr/share/nginx/html/
+root@7edcb36aff08:/# rm index.html
+```
+
+## exec
+
+- can be used to jump into a container when it's running
+- `docker exec -it wonderful_ramanujan bash` - jump into a running container, with interactive mode and `bash` running
