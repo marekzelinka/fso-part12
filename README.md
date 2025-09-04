@@ -226,7 +226,7 @@ services:
 
 The above will create a directory called `mongo_data` to your local filesystem and map it into the container as `/data/db`. Data in `/data/db` is stored outside of the container but still accessible by the container! 
 
-Just remember to add the directory to `.gitignore`:
+Just remember to add the directory to your `.gitignore`:
 
 ```
 /mongo_data
