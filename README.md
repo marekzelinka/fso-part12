@@ -1,4 +1,6 @@
-# Docker
+# Containers
+
+## Docker
 
 - `docker -v` - prints current version
 
@@ -9,7 +11,7 @@ How to understand container vs image:
 > **Image** is pre-cooked, frozen treat.
 > **Container** is the delicious treat.
 
-## Useful commands for working with Docker:
+### Useful commands for working with Docker
 
 - `docker container run hello-world` - runs a specified container, if not present, will download
   - `docker container run -it ubuntu bash` - flags, `-it` make sure we can interact with the container
@@ -40,9 +42,9 @@ How to understand container vs image:
 
 - `docker container cp ./index.js hello-node:/usr/src/app/index.js` - copy file from own machine to the container
 
-## Dockerfile
+### Dockerfile
 
-### Useful commands for running a Dockerfile:
+#### Useful commands for running a Dockerfile
 
 - `docker build -t fs-hello-world . ` - builds an image based on the Dockerfile, 
   - the -t allows us to pick a name, in this case `fs-hello-world`
@@ -53,7 +55,7 @@ How to understand container vs image:
   - `docker run -p 3123:3000 express-server` - the `-p` flag allows us to open a port from the host machine and direct it to a port in the container
   - The format is `-p host-port:application-port`
 
-### Dockerfile best practices
+#### Dockerfile best practices
 
 There are 2 rules of thumb you should follow when creating images:
 
@@ -62,7 +64,7 @@ There are 2 rules of thumb you should follow when creating images:
 
 Snyk&apos;s **10 best practices for Node/Express containerization**, [read more on the Snyk blog](https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/).
 
-### Basic Dockerfile:
+#### Basic Dockerfile
 
 ```Dockerfile
 # syntax=docker/dockerfile:1 # best practice, specify dockerfile version 
@@ -121,7 +123,7 @@ USER node
 CMD [ "node", "./bin/www" ]
 ```
 
-### Node specific for Dockerfile
+#### Node specific for Dockerfile
 
 - `npm ci` - better version of `npm install` for building Docker images
   - `npm ci --omit=dev` - do not waste time installing development deps
@@ -138,7 +140,7 @@ and not:
 CMD [ "npm", "start" ]
 ```
 
-## Docker Compose
+### Docker Compose
 
 Helps us to manage containers.
 
@@ -155,7 +157,7 @@ services:
       - 3000:3000
 ```
 
-### Useful commands for working with Docker Compse:
+#### Useful commands for working with Docker Compse
 
 - `docker compose up` - to build and run the app, we can gracefully stop the app using `Ctrl+c` (on Win) 
   - `docker compose up --build` - if we want to rebuild the images
@@ -163,7 +165,7 @@ services:
 
 - `docker compose down` - to close the application
 
-### Utilizing containers in dev
+#### Utilizing containers in dev
 
 Using docker compose, we can run a MongoDB database for development porpuses.
 
@@ -186,7 +188,7 @@ services:
     - `docker compose -f docker-compose.dev.yml logs -f` - view output logs, the `-f` will ensure we follow the log stream
 - `docker compose -f docker-compose.dev.yml down --volumes` - start from a clean slate when using volumes
 
-### Bind mount
+#### Bind mount
 
 Bind mount is the act of binding a file (or directory) on the host machine to a file (or directory) in the container. A bind mount is done by adding a `-v` flag with `container run`. The syntax is `-v FILE-IN-HOST:FILE-IN-CONTAINER`. The bind mount is declared under key volumes in `docker-compose.dev.yml`.
 
@@ -207,7 +209,7 @@ Example:
 
 The result of the above bind mount is that the file `mongo-init.js` in ./mongo folder of the host machine is the same as the `mongo-init.js` file in the container's `/docker-entrypoint-initdb.d` directory.
 
-## Persisting data with volumes
+### Persisting data with volumes
 
 Two distinct methods to store data:
 
@@ -215,7 +217,7 @@ Two distinct methods to store data:
   - preferable if we really need to avoid the data being deleted
 - Letting Docker decide where to store the data (**volume**)
 
-### Example using the mongo image:
+#### Example using the mongo image
 
 ```yml
 services:
@@ -233,7 +235,7 @@ Just remember to add the directory to your `.gitignore`:
 /mongo_data
 ```
 
-### Using named volumes:
+#### Using named volumes
 
 ```yml
 services:
@@ -247,13 +249,13 @@ volumes:
 
 The above will let Docker create and manage the volume that is still stored in your local filesystem but figuring out where may not be as trivial as with the previous option.
 
-### Useful commands for working with volumes:
+#### Useful commands for working with volumes
 
 - `docker volume ls` - list the volumes
 - `docker volume inspect` - inspect the volume
 - `docker volume rm` - delete volume
 
-## Debugging issues in container
+### Debugging issues in container
 
 - We need new tools for debugging
 - Configuration most often is in either of two states: 
@@ -261,7 +263,7 @@ The above will let Docker create and manage the volume that is still stored in y
   2. broken
 - When writting long `Dockerfile`s or `docker-compose.yml`, take a moment and think about the various ways you could confirm something is working
 
-### Consider the following sernario:
+#### Consider the following scenario
 
 Running `docker container run -d nginx` (among other things, capable of serving static HTML files)
 
@@ -307,14 +309,16 @@ root@7edcb36aff08:/# cd /usr/share/nginx/html/
 root@7edcb36aff08:/# rm index.html
 ```
 
-### `docker exec`
+#### Using the `docker exec` command
 
 - can be used to jump into a container when it's running
 - `docker exec -it wonderful_ramanujan bash` - jump into a running container, with interactive mode and `bash` running
 
 ---
 
-## Mongo command-line interface
+## MongoDB
+
+### Setup for MongoDB CLI using `mongosh`
 
 First we need a running container with the mongo image:
 
@@ -375,10 +379,18 @@ Inside the container we can run `mongosh`:
 mongosh -u root -p example
 ```
 
-### Commands
+### CLI commands when we run `mongosh`
 
 - `show dbs` - show currnet databases
 - `use the_database` - pick a working database
 - `show collections` - lists available collections
 - `db.todos.find()` - here the `todos` is a database that we can run mongo commands on
 - `db.todos.insertOne({text:"Increase the number of tools in my tool belt", done:false})` - insert a new document into the `todos` collection
+
+## Redis
+
+- key-value database, works *in-memory* by default
+- mostly used for caching
+  - caches are used to store data that are slow to fetch (mostly from external resources)
+- redis, unlike mongo has less structure, no collections or tables like sql
+- redis is just another service we can run in `docker-compose.dev.yml` for development purposes
