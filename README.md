@@ -183,7 +183,7 @@ services:
 - `docker compose -f docker-compose.dev.yml up` - run this file with Docker Compose
   - `docker compose -f docker-compose.dev.yml up -d` - with `-d` we run the app in the backgroud
     - `docker compose -f docker-compose.dev.yml logs -f` - view output logs, the `-f` will ensure we follow the log stream
-- `docker compose -f docker-compose.dev.yml down --volumes` - start from a clean slate
+- `docker compose -f docker-compose.dev.yml down --volumes` - start from a clean slate when using volumes
 
 ### Bind mount
 
