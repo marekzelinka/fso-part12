@@ -9,6 +9,8 @@ How to understand container vs image:
 > **Image** is pre-cooked, frozen treat.
 > **Container** is the delicious treat.
 
+## Useful commands for working with Docker:
+
 - `docker container run hello-world` - runs a specified container, if not present, will download
   - `docker container run -it ubuntu bash` - flags, `-it` make sure we can interact with the container
   - `docker container run --rm ubuntu ls` - runs the `ls` command and removes the container after execution
@@ -39,6 +41,8 @@ How to understand container vs image:
 
 ## Dockerfile
 
+### Useful commands for running a Dockerfile:
+
 - `docker build -t fs-hello-world . ` - builds an image based on the Dockerfile, 
   - the -t allows us to pick a name, in this case `fs-hello-world`
   - the dot (.) means that the dockerfile is in this directory
@@ -48,7 +52,7 @@ How to understand container vs image:
   - `docker run -p 3123:3000 express-server` - the `-p` flag allows us to open a port from the host machine and direct it to a port in the container
   - The format is `-p host-port:application-port`
 
-## Dockerfile best practices
+### Dockerfile best practices
 
 There are 2 rules of thumb you should follow when creating images:
 
@@ -116,7 +120,7 @@ USER node
 CMD [ "node", "./bin/www" ]
 ```
 
-### Node specific
+### Node specific for Dockerfile
 
 - `npm ci` - better version of `npm install` for building Docker images
   - `npm ci --omit=dev` - do not waste time installing development deps
@@ -133,9 +137,9 @@ and not:
 CMD [ "npm", "start" ]
 ```
 
-## Docker compose
+## Docker Compose
 
-Docker compose is a fantastic tool, which helps us to manage containers.
+Helps us to manage containers.
 
 To use it, it's **very recommended btw**, we create a `docker-compose.yml` file next to our Dockerfile.
 
@@ -150,13 +154,15 @@ services:
       - 3000:3000
 ```
 
+### Useful commands for working with Docker Compse:
+
 - `docker compose up` - to build and run the app, we can gracefully stop the app using `Ctrl+c` (on Win) 
   - `docker compose up --build` - if we want to rebuild the images
   - `docker compose up -d` - using `-d` for detached application
 
 - `docker compose down` - to close the application
 
-## Utilizing containers in dev
+### Utilizing containers in dev
 
 Using docker compose, we can run a MongoDB database for development porpuses.
 
@@ -177,6 +183,7 @@ services:
 - `docker compose -f docker-compose.dev.yml up` - run this file with Docker Compose
   - `docker compose -f docker-compose.dev.yml up -d` - with `-d` we run the app in the backgroud
     - `docker compose -f docker-compose.dev.yml logs -f` - view output logs, the `-f` will ensure we follow the log stream
+- `docker compose -f docker-compose.dev.yml down --volumes` - start from a clean slate
 
 ### Bind mount
 
@@ -193,9 +200,54 @@ Example:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: the_database
-
     volumes: 
       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
 ```
 
 The result of the above bind mount is that the file `mongo-init.js` in ./mongo folder of the host machine is the same as the `mongo-init.js` file in the container's `/docker-entrypoint-initdb.d` directory.
+
+## Persisting data with volumes
+
+Two distinct methods to store data:
+
+- Declaring a location in your filesystem (called **bind mount**)
+  - preferable if we really need to avoid the data being deleted
+- Letting Docker decide where to store the data (**volume**)
+
+### Example using the mongo image:
+
+```yml
+services:
+  mongo:
+    # Skiped here... image:, ports:, environment:
+    volumes:
+      - ./mongo_data:/data/db
+```
+
+The above will create a directory called `mongo_data` to your local filesystem and map it into the container as `/data/db`. Data in `/data/db` is stored outside of the container but still accessible by the container! 
+
+Just remember to add the directory to `.gitignore`:
+
+```
+/mongo_data
+```
+
+### Using named volumes:
+
+```yml
+services:
+  mongo:
+    # Skiped here... image:, ports:, environment:
+    volumes:
+      - mongo_data:/data/db
+volumes:
+  mongo_data:
+```
+
+The above will let Docker create and manage the volume that is still stored in your local filesystem but figuring out where may not be as trivial as with the previous option.
+
+### Useful commands for working with volumes:
+
+- `docker volume ls` - list the volumes
+- `docker volume inspect` - inspect the volume
+- `docker volume rm` - delete volume
