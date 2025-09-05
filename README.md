@@ -370,7 +370,7 @@ db.todos.insert({ text: 'Learn about containers', done: false });
 Now we can connect to it via:
 
 ```sh
- docker exec -it 4c bash # 4c is the id of our running container
+docker exec -it 4c bash # 4c is the id of our running container
 ```
 
 Inside the container we can run `mongosh`:

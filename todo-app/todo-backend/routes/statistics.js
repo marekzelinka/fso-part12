@@ -7,7 +7,7 @@ router.get('/', async (_, res) => {
    const todosCount = await redis.getAsync('todos:count')
  
   res.send({
-    "added_todos": parseInt(todosCount, 10) ?? 0
+    "added_todos": parseInt(todosCount, 10) || 0
   });
 });
 
