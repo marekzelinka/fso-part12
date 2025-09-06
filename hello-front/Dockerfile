@@ -1,4 +1,6 @@
-FROM node:20 AS build-state
+# syntax=docker/dockerfile:1
+
+FROM node:22 AS build-state
 
 WORKDIR /usr/src/app
 
