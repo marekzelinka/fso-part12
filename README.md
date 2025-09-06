@@ -69,7 +69,7 @@ Snyk&apos;s **10 best practices for Node/Express containerization**, [read more 
 ```Dockerfile
 # syntax=docker/dockerfile:1 # best practice, specify dockerfile version 
 
-FROM node:20 # Use the node:20 image as the base for our image
+FROM node:22 # Use the node:20 image as the base for our image
 
 WORKDIR /usr/src/app # guarantee all of the following commands will have /usr/src/app set as the working directory, prevents overwriting important files
 
@@ -472,7 +472,9 @@ npm run build
 Let's create a `Dockerfile`:
 
 ```Dockerfile
-FROM node:20
+# syntax=docker/dockerfile:1
+
+FROM node:22
 
 WORKDIR /usr/src/app
 
@@ -501,8 +503,10 @@ docker run -it hello-front bash
 Let's change the above `Dockerfile` to use multi-stage builds, to do this we can create a new state using the `FROM` command, that will create a new state, and we must `COPY` some data to it:
 
 ```Dockerfile
+# syntax=docker/dockerfile:1
+
 # The first FROM is now a stage called build-stage
-FROM node:20 AS build-stage 
+FROM node:22 AS build-stage 
 
 WORKDIR /usr/src/app
 
