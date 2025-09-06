@@ -1,16 +1,23 @@
-FROM node:20 AS build-state
+# syntax=docker/dockerfile:1
+
+FROM node:22 AS base
 
 WORKDIR /usr/src/app
 
-ENV VITE_BACKEND_URL=http://localhost:3000/
+FROM base AS test
 
 COPY . .
 
-RUN npm ci
+RUN npm ci --include=dev
+
+RUN npm run test
+
+FROM test AS build
+
+ENV VITE_BACKEND_URL="http://localhost:8080/"
 
 RUN npm run build
 
 FROM nginx:1.25-alpine
 
-
-COPY --from=build-state /usr/src/app/dist /usr/share/nginx/html
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
