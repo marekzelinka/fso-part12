@@ -46,7 +46,7 @@ How to understand container vs image:
 
 #### Useful commands for running a Dockerfile
 
-- `docker build -t fs-hello-world . ` - builds an image based on the Dockerfile, 
+- `docker build . -t fs-hello-world` - builds an image based on the Dockerfile, 
   - the -t allows us to pick a name, in this case `fs-hello-world`
   - the dot (.) means that the dockerfile is in this directory
   - Meaning: Docker please build with tag (you may think of the tag as the name of the resulting image.) fs-hello-world the Dockerfile in this directory
@@ -279,7 +279,7 @@ CONTAINER ID   IMAGE   COMMAND  CREATED     STATUS    PORTS     NAMES
 3f831a57b7cc   nginx   ...      3 sec ago   Up 2 sec  80/tcp    keen_darwin
 ```
 
-*The default port for nginx is `80` and the random container name is `keen_darwin`.*
+*The default port for nginx is `80` and our container name is `keen_darwin`.*
 
 Let's shut it down and restart, specifing a port:
 
