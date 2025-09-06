@@ -452,3 +452,77 @@ services:
 
 - auto expire keys, useful when used as a cache.
 - can be used to implement the so-called [publish-subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) (or PubSub) pattern which is an asynchronous communication mechanism for distributed software
+
+## Frontend (React)
+
+To containerize a React (Vite based) app follow this steps:
+
+```sh
+npm create vite@latest hello-front -- --template react
+cd hello-front
+npm install
+```
+
+Next up, run the `build` script (Vite has a `build` script):
+
+```sh
+npm run build
+```
+
+Let's create a `Dockerfile`:
+
+```Dockerfile
+FROM node:20
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm ci
+
+RUN npm run build
+```
+
+Let's build the image and run it:
+
+```sh
+docker build . -t hello-front
+docker run -it hello-front bash
+```
+
+### Using multiple stages
+
+- goal is to create Docker images so that they do not contain anything irrelevant
+- we can split the build process into many separate stages, where we must pass **some** data to the following stages
+- small images are faster to upload and download
+- stages that are unused are **skipped**
+- we can use `nginx` to serve static files
+
+Let's change the above `Dockerfile` to use multi-stage builds, to do this we can create a new state using the `FROM` command, that will create a new state, and we must `COPY` some data to it:
+
+```Dockerfile
+# The first FROM is now a stage called build-stage
+FROM node:20 AS build-stage 
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm ci
+
+RUN npm run build
+
+# This is a new stage, everything before this is gone, except for the files that we want to COPY
+FROM nginx:1.25-alpine
+
+# COPY the directory dist from the build-stage to /usr/share/nginx/html
+# The target location here was found from the Docker hub page
+COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
+```
+
+Next up, we can build and run the image:
+
+```sh
+docker build . -t hello-front
+docker run -p 8080:80 hello-front
+```
