@@ -13,8 +13,9 @@ How to understand container vs image:
 
 ### Useful commands for working with Docker
 
-- `docker container run hello-world` - runs a specified container, if not present, will download
-  - `docker container run -it ubuntu bash` - flags, `-it` make sure we can interact with the container
+- `docker container run hello-world` - creates and runs a new container from a image
+  - if image is no present, we will download from the [Docker Hub](https://hub.docker.com/)
+  - `docker container run -it ubuntu bash` - flag, `-it` make sure we can interact with the container
   - `docker container run --rm ubuntu ls` - runs the `ls` command and removes the container after execution
   - `docker container run -it --name hello-node node:20 bash` - creates a container named `hello-node` with image `node:20`, with node preinstalled 
 
