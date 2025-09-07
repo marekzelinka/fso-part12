@@ -1,6 +1,6 @@
 services:
   app:
-    image: todo-frontend
+    image: todo-frontend-dev
     build:
       context: .
       dockerfile: dev.Dockerfile
@@ -8,4 +8,4 @@ services:
       - ./:/usr/src/app
     ports:
       - 5173:5173
-    container_name: todo-frontend
+    container_name: todo-frontend-dev
