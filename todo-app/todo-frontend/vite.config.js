@@ -10,6 +10,11 @@ export default defineConfig({
     setupFiles: './testSetup.js', 
   },
   server: {
-    allowedHosts: ['frontend']
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
   }
 })
