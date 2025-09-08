@@ -14,7 +14,7 @@ RUN npm run test
 
 FROM test AS build
 
-ENV VITE_BACKEND_URL="http://localhost:8080/"
+ENV VITE_BACKEND_URL="/api"
 
 RUN npm run build
 
