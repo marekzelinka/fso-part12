@@ -8,6 +8,6 @@ COPY . .
 
 RUN npm install
 
-ENV VITE_BACKEND_URL="http://localhost:8080/"
+ENV VITE_BACKEND_URL="http://localhost:3000/"
 
 CMD ["npm", "run", "dev", "--", "--host"]
